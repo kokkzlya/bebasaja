@@ -12,6 +12,7 @@ class RegionService {
     final response = await _client.get(url);
     final body = jsonDecode(response.body) as Map<dynamic, dynamic>;
     final jsonList = body['data'] as List<dynamic>;
+    print('>>>>>>>>>>>>>> ADA APA SEBENARNYA? $jsonList');
     return jsonList
         .map((json) => Region.fromJson(json as Map<String, dynamic>))
         .toList();

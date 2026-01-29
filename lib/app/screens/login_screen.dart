@@ -5,25 +5,27 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:bebasaja/app/screens/main_screen.dart';
 import 'package:bebasaja/app/screens/register_screen.dart';
 import 'package:bebasaja/app/stores/login_store.dart';
+import 'package:bebasaja/infra/storage/storage_utils.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
   final _formKey = GlobalKey<FormState>();
-  final LoginStore loginStore = LoginStore();
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
 
-  void _handleSubmitForm(BuildContext context) {
+  Future<void> _handleSubmitForm(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      final userId = loginStore.userId;
-      final password = loginStore.password;
-
-      // Handle login logic here
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text('Logging in with User ID: $userId Password: $password')),
-      // );
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const MainScreen()),
-      );
+      final userId = _usernameController.text;
+      final password = _passwordController.text;
+      print('Logging in with $userId and $password');
+      await SecureStorageUtil.storage.write(key: 'access_token', value: userId);
+      await SecureStorageUtil.storage.write(key: 'id_token', value: userId);
+      if (context.mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
+      }
     }
   }
 
@@ -36,12 +38,7 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                'Welcome Back!',
-                style: GoogleFonts.nunito(
-                  fontSize: 52,
-                ),
-              ),
+              Text('Welcome Back!', style: GoogleFonts.nunito(fontSize: 52)),
 
               const SizedBox(height: 20.0),
 
@@ -60,9 +57,7 @@ class LoginScreen extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 20.0),
                           child: TextField(
-                            onChanged: (value) {
-                              loginStore.setUserId(value);
-                            },
+                            controller: _usernameController,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: 'Username or email',
@@ -84,9 +79,7 @@ class LoginScreen extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 20.0),
                           child: TextField(
-                            onChanged: (value) {
-                              loginStore.setPassword(value);
-                            },
+                            controller: _passwordController,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: 'Password',
@@ -101,16 +94,16 @@ class LoginScreen extends StatelessWidget {
 
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Container(
-                        padding: EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            _handleSubmitForm(context);
-                          },
+                      child: GestureDetector(
+                        onTap: () {
+                          _handleSubmitForm(context);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                           child: Center(
                             child: Text(
                               'Login',
@@ -130,9 +123,9 @@ class LoginScreen extends StatelessWidget {
                     RichText(
                       text: TextSpan(
                         text: "Don't have an account? ",
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontSize: 18,
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(fontSize: 18),
                         children: [
                           TextSpan(
                             text: 'Register',

@@ -9,6 +9,14 @@ part of 'edit_profile_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$EditProfileStore on EditProfileStoreBase, Store {
+  Computed<bool>? _$isRegionEnabledComputed;
+
+  @override
+  bool get isRegionEnabled => (_$isRegionEnabledComputed ??= Computed<bool>(
+    () => super.isRegionEnabled,
+    name: 'EditProfileStoreBase.isRegionEnabled',
+  )).value;
+
   late final _$fullNameAtom = Atom(
     name: 'EditProfileStoreBase.fullName',
     context: context,
@@ -117,6 +125,28 @@ mixin _$EditProfileStore on EditProfileStoreBase, Store {
     });
   }
 
+  late final _$loadProvincesAsyncAction = AsyncAction(
+    'EditProfileStoreBase.loadProvinces',
+    context: context,
+  );
+
+  @override
+  Future<void> loadProvinces() {
+    return _$loadProvincesAsyncAction.run(() => super.loadProvinces());
+  }
+
+  late final _$loadRegenciesAsyncAction = AsyncAction(
+    'EditProfileStoreBase.loadRegencies',
+    context: context,
+  );
+
+  @override
+  Future<void> loadRegencies(String provinceCode) {
+    return _$loadRegenciesAsyncAction.run(
+      () => super.loadRegencies(provinceCode),
+    );
+  }
+
   late final _$EditProfileStoreBaseActionController = ActionController(
     name: 'EditProfileStoreBase',
     context: context,
@@ -202,7 +232,8 @@ province: ${province},
 regency: ${regency},
 address: ${address},
 availableProvinces: ${availableProvinces},
-availableRegencies: ${availableRegencies}
+availableRegencies: ${availableRegencies},
+isRegionEnabled: ${isRegionEnabled}
     ''';
   }
 }

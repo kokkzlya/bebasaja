@@ -27,7 +27,7 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
-            "deviceId": "chrome",
+            "deviceId": "edge",
             "args": [
                 "--web-browser-flag",
                 "--disable-web-security"

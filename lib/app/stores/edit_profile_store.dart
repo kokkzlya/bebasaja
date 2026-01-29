@@ -8,7 +8,7 @@ part 'edit_profile_store.g.dart';
 class EditProfileStore = EditProfileStoreBase with _$EditProfileStore;
 
 abstract class EditProfileStoreBase with Store {
-  RegionService _regionService;
+  final RegionService _regionService;
 
   EditProfileStoreBase(this._regionService);
 
